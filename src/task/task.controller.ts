@@ -32,6 +32,10 @@ export class TaskController {
         return { status: 'Task found' };
     }
 
+    @Get('status/:id')
+    async getTasksByStatus(@Param('id') id: number) {
+        return await this.taskService.getTasksByStatus(id);
+    }
     @Put(':id')
     async updateTask(
         @Param('id') id: number,

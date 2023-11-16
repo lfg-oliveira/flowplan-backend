@@ -2,16 +2,30 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { CreateUserDto } from 'src/create-user-dto/create-user-dto.interface';
 import argon2 from 'argon2';
+import { SignJWT } from 'jose';
+
 const prisma = new PrismaClient();
+
 @Injectable()
 export class UserService {
+    async createJWT(uid: number) {
+        return await new SignJWT({
+            uid,
+        })
+            .setExpirationTime('10m')
+            .setIssuedAt(Date.now())
+            .sign(Buffer.from(process.env.JWT_SECRET));
+    }
+
     async create(user: CreateUserDto) {
-        await prisma.user.create({
+        const createdUser = await prisma.user.create({
             data: {
                 email: user.email,
                 password: await argon2.hash(user.password),
             },
         });
+
+        return await this.createJWT(createdUser.id);
     }
 
     async login(user: Pick<CreateUserDto, 'email' | 'password'>) {
@@ -29,6 +43,8 @@ export class UserService {
                 'Nome de usuário ou senha incorreta. Tente novamente.',
             );
         }
-        return userFound;
+        // Create JWT
+        const token = this.createJWT(userFound.id);
+        return await token;
     }
 }

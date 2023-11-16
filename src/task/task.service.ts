@@ -32,6 +32,13 @@ export class TaskService {
         });
     }
 
+    async getTasksByStatus(statusId: number) {
+        return await prisma.task.findMany({
+            where: {
+                statusId: statusId,
+            },
+        });
+    }
     async updateTask(id: number, task: { [key: string]: any }) {
         await prisma.task.update({
             where: {

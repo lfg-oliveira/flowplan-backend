@@ -30,6 +30,13 @@ export class WorkspaceService {
         });
     }
 
+    getWorkspacesByUser(userId: number) {
+        return prisma.workspace.findMany({
+            where: {
+                ownerId: userId,
+            },
+        });
+    }
     async updateWorkspace(id: number, workspace: { [key: string]: any }) {
         await prisma.workspace.update({
             where: {

@@ -5,7 +5,7 @@ import { CreateUserDto } from 'src/create-user-dto/create-user-dto.interface';
 @Controller('user')
 export class UserController {
     constructor(private readonly usersService: UserService) {}
-    @Post()
+    @Post('register')
     async create(@Body() createUserDto: CreateUserDto) {
         return this.usersService.create(createUserDto);
     }

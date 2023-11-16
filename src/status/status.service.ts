@@ -31,6 +31,13 @@ export class StatusService {
         });
     }
 
+    async getStatusesByWorkspace(wsId: number) {
+        return await prisma.status.findMany({
+            where: {
+                workspaceId: wsId,
+            },
+        });
+    }
     async updateStatus(id: number, status: { [key: string]: any }) {
         await prisma.status.update({
             where: {
