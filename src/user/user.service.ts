@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { CreateUserDto } from 'src/create-user-dto/create-user-dto.interface';
-import argon2 from 'argon2';
+import * as argon2 from 'argon2';
 import { SignJWT } from 'jose';
 
 const prisma = new PrismaClient();
@@ -14,6 +14,10 @@ export class UserService {
         })
             .setExpirationTime('10m')
             .setIssuedAt(Date.now())
+            .setProtectedHeader({
+                alg: "HS256",
+                
+            })
             .sign(Buffer.from(process.env.JWT_SECRET));
     }
 
